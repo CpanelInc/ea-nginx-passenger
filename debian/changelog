@@ -1,0 +1,6 @@
+ea-nginx-passenger (0.63-1) stable; urgency=low
+
+  * ZC-10396: Create ea-nginx-passenger
+
+ -- Brian Mendoza <brian.mendoza@cpanel.net>  Tue, 11 Jul 2023 00:00:00 -0000
+
