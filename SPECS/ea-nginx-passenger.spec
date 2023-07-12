@@ -22,7 +22,10 @@ BuildRequires: libcurl
 BuildRequires: libcurl-devel
 BuildRequires: ea-brotli
 BuildRequires: ea-brotli-devel
+BuildRequires: brotli
+BuildRequires: brotli-devel
 Requires: ea-brotli
+Requires: brotli
 Requires: libcurl
 %endif
 
@@ -52,14 +55,21 @@ set -x
 cp -rf /opt/cpanel/ea-passenger-src/passenger-*/ .
 
 %build
+set -x
 
 %if 0%{?rhel} == 8
 export PATH=$PATH:/opt/cpanel/ea-ruby27/root/usr/bin
+export WITH_CC_OPT="-I/opt/cpanel/ea-brotli/include -I/opt/cpanel/ea-passenger-src/passenger-release-%{version}/src"
+export WITH_LD_OPT=-Wl,-rpath=/opt/cpanel/ea-brotli/lib
 %endif
 
 . /opt/cpanel/ea-nginx-ngxdev/set_NGINX_CONFIGURE_array.sh
 ./configure "${NGINX_CONFIGURE[@]}" \
     --add-dynamic-module=../passenger-release-%{version}/src/nginx_module \
+%if 0%{?rhel} == 8
+    --with-cc-opt="$WITH_CC_OPT" \
+    --with-ld-opt="$WITH_LD_OPT" \
+%endif
 
 make
 
