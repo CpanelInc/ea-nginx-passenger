@@ -22,14 +22,9 @@ BuildRequires: ea-libcurl >= 7.68.0-2
 BuildRequires: ea-libcurl-devel >= 7.68.0-2
 %endif
 
-%if 0%{?rhel} < 7
-%define ruby_version ea-ruby24
-%else
 %define ruby_version ea-ruby27
-%endif
 
 %if 0%{?rhel} == 9
-BuildRequires: ea-apache24-mod-passenger
 BuildRequires: ruby
 BuildRequires: ruby-devel
 BuildRequires: rubygem-rake
@@ -39,10 +34,6 @@ BuildRequires: %{ruby_version}-mod_passenger >= 6.0.4-2
 BuildRequires: %{ruby_version}-rubygem-rake >= 0.8.1
 BuildRequires: %{ruby_version}-rubygem-passenger
 BuildRequires: %{ruby_version}-ruby-devel
-%endif
-
-%if 0%{?rhel} == 9
-BuildRequires: ea-apache24-mod-passenger
 %endif
 
 Requires: ea-nginx
@@ -58,12 +49,6 @@ set -x
 cp -rf /opt/cpanel/ea-passenger-src/passenger-*/ .
 
 %build
-
-%if 0%{?rhel} < 8
-export PATH=/opt/cpanel/%{ruby_version}/root/usr/bin:/opt/cpanel/libcurl/bin:$PATH
-source /opt/cpanel/%{ruby_version}/enable
-ruby -v
-%endif
 
 . /opt/cpanel/ea-nginx-ngxdev/set_NGINX_CONFIGURE_array.sh
 ./configure "${NGINX_CONFIGURE[@]}" \
