@@ -12,11 +12,9 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:  ea-nginx-ngxdev
 BuildRequires:  ea-passenger-src
 
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} == 9
 BuildRequires: libcurl
 BuildRequires: libcurl-devel
-BuildRequires: brotli
-BuildRequires: brotli-devel
 %else
 BuildRequires: ea-libcurl >= 7.68.0-2
 BuildRequires: ea-libcurl-devel >= 7.68.0-2
@@ -28,7 +26,7 @@ BuildRequires: ea-libcurl-devel >= 7.68.0-2
 %define ruby_version ea-ruby27
 %endif
 
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} == 9
 BuildRequires: ea-apache24-mod-passenger
 BuildRequires: ruby
 BuildRequires: ruby-devel
@@ -41,7 +39,7 @@ BuildRequires: %{ruby_version}-rubygem-passenger
 BuildRequires: %{ruby_version}-ruby-devel
 %endif
 
-%if 0%{?rhel} >= 9
+%if 0%{?rhel} == 9
 BuildRequires: ea-apache24-mod-passenger
 %endif
 
@@ -64,7 +62,6 @@ export PATH=/opt/cpanel/%{ruby_version}/root/usr/bin:/opt/cpanel/libcurl/bin:$PA
 source /opt/cpanel/%{ruby_version}/enable
 ruby -v
 %endif
-
 
 . /opt/cpanel/ea-nginx-ngxdev/set_NGINX_CONFIGURE_array.sh
 ./configure "${NGINX_CONFIGURE[@]}" \
