@@ -12,9 +12,11 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:  ea-nginx-ngxdev
 BuildRequires:  ea-passenger-src
 
-%if 0%{?rhel} == 9
+%if 0%{?rhel} >= 8
 BuildRequires: libcurl
 BuildRequires: libcurl-devel
+BuildRequires: brotli
+BuildRequires: brotli-devel
 %else
 BuildRequires: ea-libcurl >= 7.68.0-2
 BuildRequires: ea-libcurl-devel >= 7.68.0-2
