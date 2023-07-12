@@ -12,14 +12,18 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:  ea-nginx-ngxdev
 BuildRequires:  ea-passenger-src
 
-%if 0%{?rhel} >= 8
+%if 0%{?rhel} > 8
 BuildRequires: libcurl
 BuildRequires: libcurl-devel
 BuildRequires: brotli
 BuildRequires: brotli-devel
 %else
-BuildRequires: ea-libcurl >= 7.68.0-2
-BuildRequires: ea-libcurl-devel >= 7.68.0-2
+BuildRequires: libcurl
+BuildRequires: libcurl-devel
+BuildRequires: ea-brotli
+BuildRequires: ea-brotli-devel
+Requires: ea-brotli
+Requires: libcurl
 %endif
 
 %define ruby_version ea-ruby27
@@ -30,7 +34,6 @@ BuildRequires: ruby-devel
 BuildRequires: rubygem-rake
 %else
 BuildRequires: %{ruby_version}
-BuildRequires: %{ruby_version}-mod_passenger >= 6.0.4-2
 BuildRequires: %{ruby_version}-rubygem-rake >= 0.8.1
 BuildRequires: %{ruby_version}-rubygem-passenger
 BuildRequires: %{ruby_version}-ruby-devel
@@ -49,6 +52,10 @@ set -x
 cp -rf /opt/cpanel/ea-passenger-src/passenger-*/ .
 
 %build
+
+%if 0%{?rhel} == 8
+export PATH=$PATH:/opt/cpanel/ea-ruby27/root/usr/bin
+%endif
 
 . /opt/cpanel/ea-nginx-ngxdev/set_NGINX_CONFIGURE_array.sh
 ./configure "${NGINX_CONFIGURE[@]}" \
