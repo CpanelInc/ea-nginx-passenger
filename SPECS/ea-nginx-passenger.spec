@@ -28,7 +28,7 @@ BuildRequires: ea-libcurl-devel >= 7.68.0-2
 %define ruby_version ea-ruby27
 %endif
 
-%if 0%{?rhel} == 9
+%if 0%{?rhel} >= 8
 BuildRequires: ea-apache24-mod-passenger
 BuildRequires: ruby
 BuildRequires: ruby-devel
@@ -41,7 +41,7 @@ BuildRequires: %{ruby_version}-rubygem-passenger
 BuildRequires: %{ruby_version}-ruby-devel
 %endif
 
-%if 0%{?rhel} == 9
+%if 0%{?rhel} >= 9
 BuildRequires: ea-apache24-mod-passenger
 %endif
 
@@ -59,7 +59,7 @@ cp -rf /opt/cpanel/ea-passenger-src/passenger-*/ .
 
 %build
 
-%if 0%{?rhel} < 9
+%if 0%{?rhel} < 8
 export PATH=/opt/cpanel/%{ruby_version}/root/usr/bin:/opt/cpanel/libcurl/bin:$PATH
 source /opt/cpanel/%{ruby_version}/enable
 ruby -v
