@@ -36,16 +36,21 @@ BuildRequires: ruby
 BuildRequires: ruby-devel
 BuildRequires: rubygem-rake
 %else
-BuildRequires: %{ruby_version}
+BuildRequires: ea-apache24-devel
 BuildRequires: %{ruby_version}-rubygem-rake >= 0.8.1
 BuildRequires: %{ruby_version}-rubygem-passenger
 BuildRequires: %{ruby_version}-ruby-devel
+BuildRequires: %{ruby_version}
+Requires:      %{ruby_version}
 %endif
+
+Requires: apache24-passenger
 
 Requires: ea-nginx
 Requires: ea-passenger-runtime
 
 Source1:  ea-nginx-passenger-module.conf
+Source2:  update_ruby_shebang.pl
 
 %description
 This module provides Phusion Passenger app support for ea-nginx
@@ -53,22 +58,34 @@ This module provides Phusion Passenger app support for ea-nginx
 %prep
 set -x
 cp -rf /opt/cpanel/ea-passenger-src/passenger-*/ .
+cp %{SOURCE2} .
 
 %build
 set -x
 
 %if 0%{?rhel} == 8
-export PATH=$PATH:/opt/cpanel/ea-ruby27/root/usr/bin
-export WITH_CC_OPT="-I/opt/cpanel/ea-brotli/include -I/opt/cpanel/ea-passenger-src/passenger-release-%{version}/src"
-export WITH_LD_OPT=-Wl,-rpath=/opt/cpanel/ea-brotli/lib
+export PATH=/opt/cpanel/ea-ruby27/root/usr/bin:$PATH
+export GEM_PATH=%{gem_dir}:${GEM_PATH:+${GEM_PATH}}${GEM_PATH:-`scl enable ea-ruby27 -- ruby -e "print Gem.path.join(':')"`}
+gem env
+CFLAGS="${CFLAGS:-%optflags}" ; export CFLAGS ;
+CXXFLAGS="${CXXFLAGS:-%optflags}" ; export CXXFLAGS ;
+FFLAGS="${FFLAGS:-%optflags}" ; export FFLAGS;
+EXTRA_CXX_LDFLAGS="-L/opt/cpanel/ea-ruby27/root/usr/lib64 -L/usr/lib64 -lcurl -lssl -lcrypto -lgssapi_krb5 -lkrb5 -lk5crypto -lkrb5support -lssl -lcrypto -lssl -lcrypto -Wl,-rpath=%{_libdir},--enable-new-dtags -lssl -lcrypto -lssl -lcrypto -lssl -lcrypto -lssl -lcrypto -lssl -lcrypto "; export EXTRA_CXX_LDFLAGS;
+export EXTRA_CXXFLAGS="-I/opt/cpanel/ea-ruby27/root/usr/include -I/usr/include"
+%define WITH_CC_OPT $(echo %{optflags} $(pcre-config --cflags)) -fPIC -I/opt/cpanel/ea-brotli/include -I/opt/cpanel/%{ruby_version}/root/usr/include -I/opt/cpanel/ea-passenger-src/passenger-release-%{version}/src/nginx_module
+%define WITH_LD_OPT -Wl,-z,relro -Wl,-z,now -pie -ldl -Wl,-rpath=/opt/cpanel/ea-brotli/lib
+
+cd passenger-release-%{version}/
+perl %{SOURCE2} 
+cd ..
 %endif
 
 . /opt/cpanel/ea-nginx-ngxdev/set_NGINX_CONFIGURE_array.sh
 ./configure "${NGINX_CONFIGURE[@]}" \
     --add-dynamic-module=../passenger-release-%{version}/src/nginx_module \
 %if 0%{?rhel} == 8
-    --with-cc-opt="$WITH_CC_OPT" \
-    --with-ld-opt="$WITH_LD_OPT" \
+    --with-cc-opt="%{WITH_CC_OPT}" \
+    --with-ld-opt="%{WITH_LD_OPT}" \
 %endif
 
 make
