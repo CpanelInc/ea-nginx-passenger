@@ -31,11 +31,11 @@ Requires: libcurl
 
 %define ruby_version ea-ruby27
 
-%if 0%{?rhel} == 9
+%if 0%{?rhel} >= 9
 BuildRequires: ruby
 BuildRequires: ruby-devel
 BuildRequires: rubygem-rake
-%else
+%if 0%{?rhel} == 8
 BuildRequires: ea-apache24-devel
 BuildRequires: %{ruby_version}-rubygem-rake >= 0.8.1
 BuildRequires: %{ruby_version}-rubygem-passenger
@@ -95,17 +95,8 @@ popd
 %install
 set -x 
 
-if [ "$NAME" = "Ubuntu" ]; then
-# This allows me to maintain this code in the SPEC file
-# buildroot and libdir are wrong for Ubuntu
-
-install -D %{SOURCE1} $DEB_INSTALL_ROOT/etc/nginx/conf.d/modules/ea-nginx-passenger-module.conf
-install -D ./nginx-build/objs/ngx_http_passenger_module.so $DEB_INSTALL_ROOT/usr/lib64/nginx/modules/ngx_http_passenger_module.so
-else
-# We are CentOS
 install -D %{SOURCE1} %{buildroot}/etc/nginx/conf.d/modules/ea-nginx-passenger-module.conf
 install -D ./nginx-build/objs/ngx_http_passenger_module.so %{buildroot}%{_libdir}/nginx/modules/ngx_http_passenger_module.so
-fi
 
 %clean
 rm -rf %{buildroot}
