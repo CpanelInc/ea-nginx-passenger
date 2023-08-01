@@ -1,4 +1,3 @@
-[%- IF behavior.standalone %]
 passenger_root [% passenger.global.passenger_root %];
 passenger_enabled off;
 passenger_user_switching on;
@@ -12,5 +11,4 @@ passenger_python [% passenger.global.default.python %];
 [%- END %]
 [%- IF passenger.global.default.nodejs %]
 passenger_nodejs [% passenger.global.default.nodejs %];
-[%- END %]
 [%- END %]
