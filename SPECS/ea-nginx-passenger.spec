@@ -46,7 +46,7 @@ Requires:      %{ruby_version}
 
 Requires: apache24-passenger
 
-Requires: ea-nginx
+Requires: ea-nginx >= 1:1.25.1-3
 Requires: ea-passenger-runtime
 
 Source1:  ea-nginx-passenger-module.conf
