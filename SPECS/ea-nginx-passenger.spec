@@ -1,7 +1,7 @@
 Name:           ea-nginx-passenger
-Version:        6.0.18
+Version:        6.0.20
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4552 for more details
-%define release_prefix 4
+%define release_prefix 1
 Release:        %{release_prefix}%{?dist}.cpanel
 Summary:        Provides passenger module for ea-nginx
 License:        MIT
@@ -77,7 +77,7 @@ export EXTRA_CXXFLAGS="-I/opt/cpanel/ea-ruby27/root/usr/include -I/usr/include"
 %endif
 
 cd passenger-release-%{version}/
-perl %{SOURCE2} 
+perl %{SOURCE2}
 cd ..
 %endif
 
@@ -94,7 +94,7 @@ make
 popd
 
 %install
-set -x 
+set -x
 
 install -D %{SOURCE1} %{buildroot}/etc/nginx/conf.d/modules/ea-nginx-passenger-module.conf
 install -D %{SOURCE3} %{buildroot}/etc/nginx/ea-nginx/ngx_http_passenger_module.conf.tt
@@ -110,8 +110,8 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/nginx/modules/ngx_http_passenger_module.so
 
 %changelog
-* Tue Apr 16 2024 Cory McIntire <cory@cpanel.net> - 6.0.18-4
-- EA-12100: Build against ea-nginx version v1.25.5
+* Mon Apr 22 2024 Cory McIntire <cory@cpanel.net> - 6.0.20-1
+- EA-12100: Build against ea-nginx version 1.25.5 and update passenger version
 
 * Thu Oct 26 2023 Cory McIntire <cory@cpanel.net> - 6.0.18-3
 - EA-11772: Build against ea-nginx version v1.25.3
