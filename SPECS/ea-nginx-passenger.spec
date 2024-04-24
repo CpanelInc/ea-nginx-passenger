@@ -1,7 +1,7 @@
 Name:           ea-nginx-passenger
 Version:        6.0.20
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4552 for more details
-%define release_prefix 1
+%define release_prefix 5
 Release:        %{release_prefix}%{?dist}.cpanel
 Summary:        Provides passenger module for ea-nginx
 License:        MIT
@@ -110,8 +110,11 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/nginx/modules/ngx_http_passenger_module.so
 
 %changelog
-* Mon Apr 22 2024 Cory McIntire <cory@cpanel.net> - 6.0.20-1
+* Mon Apr 22 2024 Cory McIntire <cory@cpanel.net> - 6.0.20-5
 - EA-12100: Build against ea-nginx version 1.25.5 and update passenger version
+
+* Wed Feb 14 2024 Cory McIntire <cory@cpanel.net> - 6.0.18-4
+- EA-11973: Build against ea-nginx version v1.25.4
 
 * Thu Oct 26 2023 Cory McIntire <cory@cpanel.net> - 6.0.18-3
 - EA-11772: Build against ea-nginx version v1.25.3
