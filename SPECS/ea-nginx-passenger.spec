@@ -12,6 +12,10 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 BuildRequires:  ea-nginx-ngxdev
 BuildRequires:  ea-passenger-src
 
+%if 0%{?rhel} == 7
+BuildRequires: devtoolset-8 devtoolset-8-gcc devtoolset-8-gcc-c++ kernel-devel
+%endif
+
 %if 0%{?rhel} > 8
 BuildRequires: libcurl
 BuildRequires: libcurl-devel
@@ -63,6 +67,9 @@ cp %{SOURCE2} .
 
 %build
 set -x
+%if 0%{?rhel} == 7
+. /opt/rh/devtoolset-8/enable
+%endif
 
 %if 0%{?rhel} <= 8
 export PATH=/opt/cpanel/ea-ruby27/root/usr/bin:$PATH
