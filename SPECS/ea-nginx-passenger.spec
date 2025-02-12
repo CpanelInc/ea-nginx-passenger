@@ -1,5 +1,5 @@
 Name:           ea-nginx-passenger
-Version:        6.0.23
+Version:        6.0.24
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4552 for more details
 %define release_prefix 2
 Release:        %{release_prefix}%{?dist}.cpanel
@@ -11,6 +11,10 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires:  ea-nginx-ngxdev
 BuildRequires:  ea-passenger-src
+
+%if 0%{?rhel} == 7
+BuildRequires: devtoolset-8 devtoolset-8-gcc devtoolset-8-gcc-c++ kernel-devel
+%endif
 
 %if 0%{?rhel} > 8
 BuildRequires: libcurl
@@ -63,6 +67,9 @@ cp %{SOURCE2} .
 
 %build
 set -x
+%if 0%{?rhel} == 7
+. /opt/rh/devtoolset-8/enable
+%endif
 
 %if 0%{?rhel} <= 8
 export PATH=/opt/cpanel/ea-ruby27/root/usr/bin:$PATH
@@ -110,6 +117,13 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/nginx/modules/ngx_http_passenger_module.so
 
 %changelog
+* Tue Feb 11 2025 Cory McIntire <cory.mcintire@webpros.com> - 6.0.24-2
+- EA-12703: Build against ea-nginx version v1.26.3
+
+* Mon Feb 10 2025 Cory McIntire <cory.mcintire@webpros.com> - 6.0.24-1
+- EA-12681: ea-passenger-src was updated from v6.0.23 to v6.0.24
+- EA-12686: Build against ea-nginx version v1.26.3
+
 * Wed Aug 14 2024 Cory McIntire <cory@cpanel.net> - 6.0.23-2
 - EA-12337: Build against ea-nginx version v1.26.2
 
