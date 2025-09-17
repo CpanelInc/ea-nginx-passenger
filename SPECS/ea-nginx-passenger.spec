@@ -89,7 +89,7 @@ cd ..
 %endif
 
 . /opt/cpanel/ea-nginx-ngxdev/set_NGINX_CONFIGURE_array.sh
-./configure "${NGINX_CONFIGURE[@]}" \
+./auto/configure "${NGINX_CONFIGURE[@]}" \
     --add-dynamic-module=../passenger-release-%{version}/src/nginx_module \
 %if 0%{?rhel} <= 8
     --with-cc-opt="%{WITH_CC_OPT}" \
