@@ -1,7 +1,7 @@
 Name:           ea-nginx-passenger
 Version:        6.1.0
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4552 for more details
-%define release_prefix 4
+%define release_prefix 5
 Release:        %{release_prefix}%{?dist}.cpanel
 Summary:        Provides passenger module for ea-nginx
 License:        MIT
@@ -40,15 +40,12 @@ BuildRequires: ruby
 BuildRequires: ruby-devel
 BuildRequires: rubygem-rake
 %else
-BuildRequires: ea-apache24-devel
 BuildRequires: %{ruby_version}-rubygem-rake >= 0.8.1
 BuildRequires: %{ruby_version}-rubygem-passenger
 BuildRequires: %{ruby_version}-ruby-devel
 BuildRequires: %{ruby_version}
 Requires:      %{ruby_version}
 %endif
-
-Requires: apache24-passenger
 
 Requires: ea-nginx >= 1:1.25.1-3
 Requires: ea-passenger-runtime
@@ -88,6 +85,10 @@ perl %{SOURCE2}
 cd ..
 %endif
 
+%if 0%{?rhel} >= 10
+export LIBEV_CONFIGURE_HOST=x86_64-redhat-linux-gnu
+%endif
+
 . /opt/cpanel/ea-nginx-ngxdev/set_NGINX_CONFIGURE_array.sh
 ./auto/configure "${NGINX_CONFIGURE[@]}" \
     --add-dynamic-module=../passenger-release-%{version}/src/nginx_module \
@@ -117,6 +118,9 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/nginx/modules/ngx_http_passenger_module.so
 
 %changelog
+* Thu Dec 11 2025 Dan Muey <daniel.muey@webpros.com> - 6.1.0-5
+- EA4-223: move out of experimental and not require apache
+
 * Tue Dec 09 2025 Cory McIntire <cory.mcintire@webpros.com> - 6.1.0-4
 - EA-13286: Build against ea-nginx version v1.29.4
 
