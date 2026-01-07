@@ -1,7 +1,7 @@
 Name:           ea-nginx-passenger
-Version:        6.0.27
+Version:        6.1.1
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4552 for more details
-%define release_prefix 2
+%define release_prefix 1
 Release:        %{release_prefix}%{?dist}.cpanel
 Summary:        Provides passenger module for ea-nginx
 License:        MIT
@@ -40,15 +40,12 @@ BuildRequires: ruby
 BuildRequires: ruby-devel
 BuildRequires: rubygem-rake
 %else
-BuildRequires: ea-apache24-devel
 BuildRequires: %{ruby_version}-rubygem-rake >= 0.8.1
 BuildRequires: %{ruby_version}-rubygem-passenger
 BuildRequires: %{ruby_version}-ruby-devel
 BuildRequires: %{ruby_version}
 Requires:      %{ruby_version}
 %endif
-
-Requires: apache24-passenger
 
 Requires: ea-nginx >= 1:1.25.1-3
 Requires: ea-passenger-runtime
@@ -88,8 +85,12 @@ perl %{SOURCE2}
 cd ..
 %endif
 
+%if 0%{?rhel} >= 10
+export LIBEV_CONFIGURE_HOST=x86_64-redhat-linux-gnu
+%endif
+
 . /opt/cpanel/ea-nginx-ngxdev/set_NGINX_CONFIGURE_array.sh
-./configure "${NGINX_CONFIGURE[@]}" \
+./auto/configure "${NGINX_CONFIGURE[@]}" \
     --add-dynamic-module=../passenger-release-%{version}/src/nginx_module \
 %if 0%{?rhel} <= 8
     --with-cc-opt="%{WITH_CC_OPT}" \
@@ -117,6 +118,19 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/nginx/modules/ngx_http_passenger_module.so
 
 %changelog
+* Tue Dec 23 2025 Cory McIntire <cory.mcintire@webpros.com> - 6.1.1-1
+- EA-13306: ea-passenger-src was updated from v6.1.0 to v6.1.1
+
+* Thu Dec 11 2025 Dan Muey <daniel.muey@webpros.com> - 6.1.0-5
+- EA4-223: move out of experimental and not require apache
+
+* Tue Dec 09 2025 Cory McIntire <cory.mcintire@webpros.com> - 6.1.0-4
+- EA-13286: Build against ea-nginx version v1.29.4
+
+* Tue Oct 28 2025 Cory McIntire <cory.mcintire@webpros.com> - 6.0.27-3
+- EA-13235: Build against ea-nginx version v1.29.3
+- ea-passenger-src was updated from v6.0.27 to v6.1.0
+
 * Wed Aug 13 2025 Dan Muey <daniel.muey@webpros.com> - 6.0.27-2
 - EA-13069: Build against ea-nginx version v1.29.1
 
