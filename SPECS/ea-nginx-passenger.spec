@@ -1,7 +1,7 @@
 Name:           ea-nginx-passenger
 Version:        6.1.8
 # Doing release_prefix this way for Release allows for OBS-proof versioning, See EA-4552 for more details
-%define release_prefix 1
+%define release_prefix 2
 Release:        %{release_prefix}%{?dist}.cpanel
 Summary:        Provides passenger module for ea-nginx
 License:        MIT
@@ -10,7 +10,10 @@ Group:          System Environment/Libraries
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires:  ea-nginx-ngxdev
-BuildRequires:  ea-passenger-src
+# Version floor is load-bearing, not cosmetic. This package carries no patches of
+# its own and builds from the tree ea-passenger-src installs, so without a floor a
+# build can silently use an older, unpatched source tree.
+BuildRequires:  ea-passenger-src >= 6.1.8-2
 
 %if 0%{?rhel} == 7
 BuildRequires: devtoolset-8 devtoolset-8-gcc devtoolset-8-gcc-c++ kernel-devel
@@ -118,6 +121,9 @@ rm -rf %{buildroot}
 %attr(0755,root,root) %{_libdir}/nginx/modules/ngx_http_passenger_module.so
 
 %changelog
+* Thu Aug 13 2026 Cory McIntire <cory.mcintire@webpros.com> - 6.1.8-2
+- SEC-75753: Rebuild against ea-passenger-src 6.1.8-2.
+
 * Tue Jul 28 2026 Cory McIntire <cory.mcintire@webpros.com> - 6.1.8-1
 - EA-13509: ea-passenger-src was updated from v6.1.7 to v6.1.8
 * Thu Jul 16 2026 Cory McIntire <cory.mcintire@webpros.com> - 6.1.7-2
