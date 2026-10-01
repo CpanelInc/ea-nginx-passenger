@@ -13,7 +13,7 @@ BuildRequires:  ea-nginx-ngxdev
 # Version floor is load-bearing, not cosmetic. This package carries no patches of
 # its own and builds from the tree ea-passenger-src installs, so without a floor a
 # build can silently use an older, unpatched source tree.
-BuildRequires:  ea-passenger-src >= 6.1.8-2
+BuildRequires:  ea-passenger-src >= 6.2.0
 
 %if 0%{?rhel} == 7
 BuildRequires: devtoolset-8 devtoolset-8-gcc devtoolset-8-gcc-c++ kernel-devel
